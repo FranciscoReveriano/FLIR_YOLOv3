@@ -310,12 +310,13 @@ def train():
             is_coco = any([x in data for x in ['coco.data', 'coco2014.data', 'coco2017.data']]) and model.nc == 80
             results, maps = test.test(cfg,
                                       data,
+                                      epoch,
                                       batch_size=batch_size * 2,
                                       img_size=img_size_test,
                                       model=model,
-                                      conf_thres=0.001 if final_epoch and is_coco else 0.1,  # 0.1 for speed
+                                      conf_thres=0.1 if final_epoch and is_coco else 0.1,  # 0.1 for speed
                                       iou_thres=0.5,
-                                      save_json=final_epoch and is_coco,
+                                      save_json=True,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader)
 
@@ -399,7 +400,7 @@ if __name__ == '__main__':
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/DsiacPlus.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67% - 150%) img_size every 10 batches')
-    parser.add_argument('--img-size', nargs='+', type=int, default=[416], help='train and test image-sizes')
+    parser.add_argument('--img-size', nargs='+', type=int, default=[640], help='train and test image-sizes')
     parser.add_argument('--rect', action='store_true', help='rectangular training')
     parser.add_argument('--resume', action='store_true', help='resume training from last.pt')
     parser.add_argument('--nosave', action='store_true', help='only save final checkpoint')
