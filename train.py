@@ -50,6 +50,9 @@ if f:
 
 
 def train():
+    # Empty Cuda First
+    torch.cuda.empty_cache()
+
     cfg = opt.cfg
     data = opt.data
     img_size, img_size_test = opt.img_size if len(opt.img_size) == 2 else opt.img_size * 2  # train, test sizes
