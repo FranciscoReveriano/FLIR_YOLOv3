@@ -3,10 +3,10 @@ import os
 
 def adjust_labels():
     '''Converts multi target labels to single target labels'''
-    original_train = 'data/DSIACPlus_Train.txt'
-    original_test = 'data/DSIACPlus_Test.txt'
-    trainFileName = "data/DsiacPlusF1.txt"
-    validateFileName = "data/DsiacPlusF2.txt"
+    original_train = 'data/Original/DSIAC_VideoCV_Train.txt'
+    original_test = 'data/Original/DSIAC_VideoCV_Test.txt'
+    trainFileName = "data/DSIAC_VideoCV_Train.txt"
+    validateFileName = "data/DSIAC_VideoCV_Test.txt"
     # Set Up Training Data Set
     original_train_list = []
     count = 0

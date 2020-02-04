@@ -183,6 +183,14 @@ def train():
     # Dataloader
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
+    # Calculate Correct Batch Size for Testing
+    batch_size_test = 0
+    if batch_size == 1:
+        batch_size_test = 16
+    else:
+        batch_size_test = batch_size * 2
+
+    # Proceed to Create Dataloaders
     dataloader = torch.utils.data.DataLoader(dataset,
                                              batch_size=batch_size,
                                              num_workers=nw,
@@ -191,7 +199,7 @@ def train():
                                              collate_fn=dataset.collate_fn)
 
     # Testloader
-    testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, img_size_test, batch_size * 2,
+    testloader = torch.utils.data.DataLoader(LoadImagesAndLabels(test_path, img_size_test, batch_size_test,
                                                                  hyp=hyp,
                                                                  rect=False,
                                                                  cache_labels=True,

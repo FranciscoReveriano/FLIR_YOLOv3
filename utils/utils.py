@@ -248,7 +248,7 @@ def compute_ap(recall, precision):
     mpre = np.flip(np.maximum.accumulate(np.flip(mpre)))
 
     # Integrate area under curve
-    method = 'continuous'  # methods: 'continuous', 'interp'
+    method = 'interp'  # methods: 'continuous', 'interp'
     if method == 'interp':
         x = np.linspace(0, 1, 101)  # 101-point interp (COCO)
         ap = np.trapz(np.interp(x, mrec, mpre), x)  # integrate
@@ -453,7 +453,7 @@ def build_targets(model, targets):
     nt = len(targets)
     tcls, tbox, indices, av = [], [], [], []
     multi_gpu = type(model) in (nn.parallel.DataParallel, nn.parallel.DistributedDataParallel)
-    reject, use_all_anchors = True, True
+    reject, use_all_anchors = True, False
     for i in model.yolo_layers:
         # get number of grid points and anchor vec for this yolo layer
         if multi_gpu:

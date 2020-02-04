@@ -42,7 +42,7 @@ def exif_size(img):
 
 
 class LoadImages:  # for inference
-    def __init__(self, path, img_size=416, half=False):
+    def __init__(self, path, img_size=640, half=False):
         path = str(Path(path))  # os-agnostic
         files = []
         if os.path.isdir(path):
@@ -602,7 +602,7 @@ def load_mosaic(self, index):
     return img4, labels4
 
 
-def letterbox(img, new_shape=(416, 416), color=(128, 128, 128),
+def letterbox(img, new_shape=(640, 512), color=(128, 128, 128),
               auto=True, scaleFill=False, scaleup=True, interp=cv2.INTER_AREA):
     # Resize image to a 32-pixel-multiple rectangle https://github.com/ultralytics/yolov3/issues/232
     shape = img.shape[:2]  # current shape [height, width]
@@ -755,7 +755,7 @@ def cutout(image, labels):
     return labels
 
 
-def reduce_img_size(path='../data/sm4/images', img_size=1024):  # from utils.datasets import *; reduce_img_size()
+def reduce_img_size(path='../data/sm4/images', img_size=640):  # from utils.datasets import *; reduce_img_size()
     # creates a new ./images_reduced folder with reduced size images of maximum size img_size
     path_new = path + '_reduced'  # reduced images path
     create_folder(path_new)

@@ -290,7 +290,7 @@ def get_yolo_layers(model):
     return [i for i, x in enumerate(model.module_defs) if x['type'] == 'yolo']  # [82, 94, 106] for yolov3
 
 
-def create_grids(self, img_size=416, ng=(13, 13), device='cpu', type=torch.float32):
+def create_grids(self, img_size=640, ng=(13, 13), device='cpu', type=torch.float32):
     nx, ny = ng  # x and y grid size
     self.img_size = max(img_size)
     self.stride = self.img_size / max(ng)
