@@ -27,9 +27,9 @@ def test(cfg,
     # Initialize Save JSON only if it meets the number
     JSON_LIST = [4,9,14,19,24,29,34,39,44,49,50]
     if numCount in JSON_LIST:
-        save_json == True
+        save_json = True
     else:
-        save_json == False
+        save_json = False
 
 
     # Initialize/load model and set device
