@@ -25,9 +25,9 @@ results_file = 'results.txt'
 hyp = {'giou': 3.54,  # giou loss gain
        'cls': 37.4,  # cls loss gain
        'cls_pw': 1.0,  # cls BCELoss positive_weight
-       'obj': 49.5,  # obj loss gain (*=img_size/320 if img_size != 320)
+       'obj': 49.5,  # obj loss gain (*=img_size/320 if img_size != 320)py
        'obj_pw': 1.0,  # obj BCELoss positive_weight
-       'iou_t': 0.1,  # iou training threshold
+       'iou_t': 0.15,  # iou training threshold
        'lr0': 0.000579,  # initial learning rate (SGD=5E-3, Adam=5E-4)
        'lrf': -4.,  # final LambdaLR learning rate = lr0 * (10 ** lrf)
        'momentum': 0.937,  # SGD momentum
@@ -405,10 +405,10 @@ def train():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=25)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
+    parser.add_argument('--epochs', type=int, default=30)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
     parser.add_argument('--batch-size', type=int, default=4)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--accumulate', type=int, default=4, help='batches to accumulate before optimizing')
-    parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/DsiacPlus.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67% - 150%) img_size every 10 batches')
     parser.add_argument('--img-size', nargs='+', type=int, default=[640], help='train and test image-sizes')

@@ -10,7 +10,7 @@ from utils.utils import *
 
 def test(cfg,
          data,
-         numCount, # Which Epoch Is being Called
+         numCount=4, # Which Epoch Is being Called
          weights=None,
          batch_size=16,
          img_size=640,
@@ -125,6 +125,7 @@ def test(cfg,
             # Clip boxes to image bounds
             clip_coords(pred, (height, width))
 
+            save_json = True
             # Append to pycocotools JSON dictionary
             if save_json:
                 # [{"image_id": 42, "category_id": 18, "bbox": [258.15, 41.29, 348.26, 243.78], "score": 0.236}, ...
@@ -137,7 +138,7 @@ def test(cfg,
                 box[:, :2] -= box[:, 2:] / 2  # xy center to top-left corner
                 for di, d in enumerate(pred):
                     jdict.append({'image_id': image_id,
-                                  'videoName': fullName,
+                                  'video_name': fullName,
                                   'frame': frameInd,
                                   'category_id': coco91class[int(d[5])],
                                   'bbox': [floatn(x, 3) for x in box[di]],
@@ -228,11 +229,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/DsiacPlus.data', help='*.data path')
-    parser.add_argument('--numCount', type=int, default=0, help='Epoch Number')
-    parser.add_argument('--weights', type=str, default='weights/backup15.pt', help='path to weights file')
+    parser.add_argument('--numCount', type=int, default=4, help='Epoch Number')
+    parser.add_argument('--weights', type=str, default='weights/backup11.pt', help='path to weights file')
     parser.add_argument('--batch-size', type=int, default=32, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
-    parser.add_argument('--conf-thres', type=float, default=0.1, help='object confidence threshold')
+    parser.add_argument('--conf-thres', type=float, default=0.2, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
     parser.add_argument('--save-json', action='store_true', help='save a cocoapi-compatible JSON results file')
     parser.add_argument('--task', default='test', help="'test', 'study', 'benchmark'")

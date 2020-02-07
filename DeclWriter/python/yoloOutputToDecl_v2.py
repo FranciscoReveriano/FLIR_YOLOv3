@@ -39,10 +39,11 @@ class dukeResultsProcessor:
         #%  Read the json structure
         with open(detectorOutputLocation, 'r') as f:
             resultsStruct = json.load(f)
-            
+
         # Get image name for every alarm
-        imageNames = [ sub['video_name'] for sub in resultsStruct ] 
-        
+        imageNames = [ sub['video_name'] for sub in resultsStruct]
+
+
         # This does not maintain order of original list! 
         uniqueImageNames = list(set(imageNames));
         
@@ -56,11 +57,11 @@ class dukeResultsProcessor:
             #Get the name of the video from which the image came
             m = re.search('(.*)_(\d*)', uniqueImageNames[v])
             videoName = m.group(1);
-            
+
             # Correct for the fact that we (Duke) sample only every 
             #   nth frame as defined by self.sampling rate.  And we use matlab indexing when making the
             #      the image indices (starts from 1 instead of 0)
-            frameIndex = (self.samplingRate(np.float16(m.group(2))-1))+1;
+            frameIndex = (self.samplingRate*(np.float16(m.group(2))-1))+1;
             
             #%Get all the scores and bounding boxes into cell arrays
             boxesNow = [ sub['bbox'] for sub in imageResults ] 
@@ -194,10 +195,10 @@ if __name__ == "__main__":
     #%% SPECIFY FILE LOCATIONS
       
     #%This is the file location of the output from the detector (a json file).  
-    detectorOutputLocation = '/home/evanaml/PycharmProjects/ATR/yolov3/results.json'
+    detectorOutputLocation = '/home/franciscoAML/Documents/DSIAC/Five_Classes/Version2.0/yolov3/JSON/Test4_results.json'
 
     #%The directory where we would like to write .decl files
-    declOutputDirectory ='/home/evanaml/PycharmProjects/ATR/yolov3/data/WrittenDecl/'
+    declOutputDirectory ='/home/franciscoAML/Documents/DSIAC/Five_Classes/Version2.0/yolov3/WrittenDecl/'
 
     #%%  Instantiate decl-writer class
     dukeProc = dukeResultsProcessor()
@@ -207,5 +208,4 @@ if __name__ == "__main__":
     
     #%%  WRite decl files
     resultsDict = dukeProc.resultsDictionaryToDecl(resultsDict,declOutputDirectory)
-    
     
