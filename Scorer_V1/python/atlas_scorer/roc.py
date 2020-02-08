@@ -201,7 +201,6 @@ class AtlasMetricROC:
     def plot_roc(self, ax=None, title='', xlabel='$P_{Fa}$', ylabel='$P_D$', label=None):
         return self._plot_xy(self.pf, self.pd, ax=ax, title=title, xlabel=xlabel,
                              ylabel=ylabel, label=label, xlim_args={'right': 1})
-
     def plot_far(self, ax=None, title='', xlabel='$FAR$', ylabel='$P_D$', label=None):
         if self.far is None:
             raise AttributeError(
