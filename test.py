@@ -12,9 +12,9 @@ def test(cfg,
          data,
          numCount=4, # Which Epoch Is being Called
          weights=None,
-         batch_size=16,
+         batch_size=32,
          img_size=640,
-         conf_thres=0.1,
+         conf_thres=0.2,
          iou_thres=0.5,  # for nms
          save_json=True,
          single_cls=False,

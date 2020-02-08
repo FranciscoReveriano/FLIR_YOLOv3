@@ -10,10 +10,10 @@ from collections.abc import Iterable
 import numpy as np
 import pandas as pd
 
-import atlas_scorer.models as models
-from atlas_scorer.errors import AtlasScorerError
-from atlas_scorer.roc import atlas_score_roc
-from atlas_scorer.schemas import AtlasDeclSchema, AtlasTruthSchema
+import Scorer_V1.python.atlas_scorer.models as models
+from Scorer_V1.python.atlas_scorer.errors import AtlasScorerError
+from Scorer_V1.python.atlas_scorer.roc import atlas_score_roc
+from Scorer_V1.python.atlas_scorer.schemas import AtlasDeclSchema, AtlasTruthSchema
 
 
 class Scorer:

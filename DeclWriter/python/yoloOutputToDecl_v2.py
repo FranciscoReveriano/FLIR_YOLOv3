@@ -41,8 +41,8 @@ class dukeResultsProcessor:
             resultsStruct = json.load(f)
 
         # Get image name for every alarm
-        imageNames = [ sub['video_name'] for sub in resultsStruct]
-
+        #imageNames = [ sub['video_name'] for sub in resultsStruct]
+        imageNames = [sub['videoName'] for sub in resultsStruct]
 
         # This does not maintain order of original list! 
         uniqueImageNames = list(set(imageNames));
@@ -65,7 +65,8 @@ class dukeResultsProcessor:
             
             #%Get all the scores and bounding boxes into cell arrays
             boxesNow = [ sub['bbox'] for sub in imageResults ] 
-            scoresNow = [ sub['score'] for sub in imageResults ] 
+            scoresNow = [ sub['score'] for sub in imageResults ]
+            classes = [sub['category_id'] for sub in imageResults]
             
             #% remove the low confidence boxes
     #        boxesNow(scoresNow<.001, :)=[];
@@ -83,7 +84,7 @@ class dukeResultsProcessor:
                     inputTemp = {'fileUID': videoName,  \
                                  'frameIndex': frameIndex, \
                                  'source': 'det', \
-                                 'class': '', \
+                                 'class': str(classes[ind]),\
                                  'confidence': scoresNow[ind], \
                                  'aspect':math.nan, \
                                  'range':math.nan, \

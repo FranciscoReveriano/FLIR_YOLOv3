@@ -11,8 +11,8 @@ import numpy as np
 from marshmallow import Schema, fields, missing, post_dump, post_load, pre_dump
 from marshmallow import validate as mm_validate, validates as mm_validates
 
-import atlas_scorer.models as models
-from atlas_scorer.errors import AtlasScorerError, AtlasScorerDeserializationError
+import Scorer_V1.python.atlas_scorer.models as models
+from Scorer_V1.python.atlas_scorer.errors import AtlasScorerError, AtlasScorerDeserializationError
 
 
 class BaseSchema(Schema):

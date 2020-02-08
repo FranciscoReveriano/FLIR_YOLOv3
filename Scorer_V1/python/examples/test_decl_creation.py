@@ -1,7 +1,7 @@
 from pprint import pprint
 
-from atlas_scorer.models import AtlasDecl, BBOX, Declaration, FrameDeclaration
-from atlas_scorer.schemas import AtlasDeclSchema
+from Scorer_V1.python.atlas_scorer.models import AtlasDecl, BBOX, Declaration, FrameDeclaration
+from Scorer_V1.python.atlas_scorer.schemas import AtlasDeclSchema
 
 # Example of creating declarations and serializing.
 

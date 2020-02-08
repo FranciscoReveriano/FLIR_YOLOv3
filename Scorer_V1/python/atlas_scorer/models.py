@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from atlas_scorer.errors import AtlasScorerError
+from Scorer_V1.python.atlas_scorer.errors import AtlasScorerError
 
 _shape_registry = {}
 

@@ -5,7 +5,7 @@ import logging
 import matplotlib.pyplot as plt
 import numpy as np
 
-from atlas_scorer.errors import AtlasScorerError
+from Scorer_V1.python.atlas_scorer.errors import AtlasScorerError
 
 
 def atlas_score_roc(x, y):

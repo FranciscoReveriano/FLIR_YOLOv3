@@ -2,12 +2,14 @@ import sys
 import os
 import matplotlib.pyplot as plt 
 
-from atlas_scorer.score import Scorer
+from Scorer_V1.python.atlas_scorer.score import Scorer
+
 
 cur_dir, _ = os.path.split(sys.argv[0])
+print(cur_dir)
 
-truth_files = [os.path.join(cur_dir, 'cegr01923_0001.truth.json')]
-decl_files = [os.path.join(cur_dir, 'cegr01923_0001.madhot.decl.json')]
+truth_files = [os.path.join(cur_dir, '/home/franciscoAML/Documents/DSIAC/Five_Classes/Version2.0/yolov3/Scorer_V1/testing/test_scene/testScene.truth.json')]
+decl_files = [os.path.join(cur_dir, '/home/franciscoAML/Documents/DSIAC/Five_Classes/Version2.0/yolov3/Scorer_V1/testing/test_scene/testScene.decl.json')]
 
 scorer = Scorer()
 scorer = scorer.load(truth_files, decl_files)

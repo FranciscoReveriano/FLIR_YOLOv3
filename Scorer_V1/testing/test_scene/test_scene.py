@@ -2,7 +2,7 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
-from atlas_scorer.score import Scorer
+from Scorer_V1.python.atlas_scorer.score import Scorer
 
 ## 1
 scorer = Scorer()
