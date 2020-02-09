@@ -27,7 +27,7 @@ hyp = {'giou': 3.54,  # giou loss gain
        'cls_pw': 1.0,  # cls BCELoss positive_weight
        'obj': 49.5,  # obj loss gain (*=img_size/320 if img_size != 320)py
        'obj_pw': 1.0,  # obj BCELoss positive_weight
-       'iou_t': 0.15,  # iou training threshold
+       'iou_t': 0.1,  # iou training threshold
        'lr0': 0.000579,  # initial learning rate (SGD=5E-3, Adam=5E-4)
        'lrf': -4.,  # final LambdaLR learning rate = lr0 * (10 ** lrf)
        'momentum': 0.937,  # SGD momentum
@@ -205,7 +205,7 @@ def train():
                                                                  cache_labels=True,
                                                                  cache_images=opt.cache_images,
                                                                  single_cls=opt.single_cls),
-                                             batch_size=batch_size * 2,
+                                             batch_size=32,
                                              num_workers=nw,
                                              pin_memory=True,
                                              collate_fn=dataset.collate_fn)
@@ -257,7 +257,8 @@ def train():
 
             # Multi-Scale training
             if opt.multi_scale:
-                if ni / accumulate % 10 == 0:  #  adjust (67% - 150%) every 10 batches
+                # Change Was made Here it used to be 10. I trained the grayscale weight son 10.
+                if ni / accumulate % 1 == 0:  #  adjust (67% - 150%) every 10 batches
                     img_size = random.randrange(img_sz_min, img_sz_max + 1) * 32
                 sf = img_size / max(imgs.shape[2:])  # scale factor
                 if sf != 1:
@@ -317,19 +318,31 @@ def train():
 
         # Process epoch results
         final_epoch = epoch + 1 == epochs
-        if not opt.notest or final_epoch:  # Calculate mAP
-            is_coco = any([x in data for x in ['coco.data', 'coco2014.data', 'coco2017.data']]) and model.nc == 80
-            results, maps = test.test(cfg,
+        if not opt.notest:  # Calculate mAP
+            if epoch % 5 == 4:
+                results, maps = test.test(cfg,
                                       data,
                                       epoch,
-                                      batch_size=batch_size * 2,
+                                      batch_size=32,
                                       img_size=img_size_test,
                                       model=model,
-                                      conf_thres=0.2 if final_epoch and is_coco else 0.1,  # 0.1 for speed
+                                      conf_thres=0.1,
                                       iou_thres=0.6,
                                       save_json=True,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader)
+            else:
+                results, maps = test.test(cfg,
+                                          data,
+                                          epoch,
+                                          batch_size=32,
+                                          img_size=img_size_test,
+                                          model=model,
+                                          conf_thres=0.1,
+                                          iou_thres=0.6,
+                                          save_json=False,
+                                          single_cls=opt.single_cls,
+                                          dataloader=testloader)
 
         # Update scheduler
         scheduler.step()
@@ -405,10 +418,10 @@ def train():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=30)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
+    parser.add_argument('--epochs', type=int, default=50)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
     parser.add_argument('--batch-size', type=int, default=4)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--accumulate', type=int, default=4, help='batches to accumulate before optimizing')
-    parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp.cfg', help='*.cfg path')
+    parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
     parser.add_argument('--data', type=str, default='data/DsiacPlus.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67% - 150%) img_size every 10 batches')
     parser.add_argument('--img-size', nargs='+', type=int, default=[640], help='train and test image-sizes')
@@ -419,7 +432,7 @@ if __name__ == '__main__':
     parser.add_argument('--evolve', action='store_true', help='evolve hyperparameters')
     parser.add_argument('--bucket', type=str, default='', help='gsutil bucket')
     parser.add_argument('--cache-images', action='store_true', help='cache images for faster training')
-    parser.add_argument('--weights', type=str, default='weights/converted.weights', help='initial weights')
+    parser.add_argument('--weights', type=str, default='weights/ultralytics68.pt', help='initial weights')
     parser.add_argument('--arc', type=str, default='default', help='yolo architecture')  # default, uCE, uBCE
     parser.add_argument('--name', default='', help='renames results.txt to results_name.txt if supplied')
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1 or cpu)')
