@@ -182,11 +182,11 @@ def train():
 
     # Dataloader
     batch_size = min(batch_size, len(dataset))
-    nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
+    nw = 8  # number of workers
     # Calculate Correct Batch Size for Testing
     batch_size_test = 0
     if batch_size == 1:
-        batch_size_test = 16
+        batch_size_test = 32
     else:
         batch_size_test = batch_size * 2
 
