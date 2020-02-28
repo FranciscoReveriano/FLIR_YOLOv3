@@ -453,7 +453,7 @@ def build_targets(model, targets):
     nt = len(targets)
     tcls, tbox, indices, av = [], [], [], []
     multi_gpu = type(model) in (nn.parallel.DataParallel, nn.parallel.DistributedDataParallel)
-    reject, use_all_anchors = True, False
+    reject, use_all_anchors = True, True
     for i in model.yolo_layers:
         # get number of grid points and anchor vec for this yolo layer
         if multi_gpu:

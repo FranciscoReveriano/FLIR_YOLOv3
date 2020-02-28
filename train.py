@@ -74,7 +74,7 @@ def train():
     train_path = data_dict['train']
     test_path = data_dict['valid']
     nc = 1 if opt.single_cls else int(data_dict['classes'])  # number of classes
-
+    print("Total Number of clases:", nc)
     # Remove previous results
     for f in glob.glob('*_batch*.jpg') + glob.glob(results_file):
         os.remove(f)
@@ -144,19 +144,22 @@ def train():
     # lf = lambda x: 1 - 10 ** (hyp['lrf'] * (1 - x / epochs))  # inverse exp ramp
     # scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
     # scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=range(59, 70, 1), gamma=0.8)  # gradual fall to 0.1*lr0
-    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[round(opt.epochs * x) for x in [0.8, 0.9]], gamma=0.1)
+    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[round(opt.epochs * x) for x in [0.5, 0.8]], gamma=0.1)
     scheduler.last_epoch = start_epoch - 1
-
-    # # Plot lr schedule
-    # y = []
-    # for _ in range(epochs):
-    #     scheduler.step()
-    #     y.append(optimizer.param_groups[0]['lr'])
-    # plt.plot(y, label='LambdaLR')
-    # plt.xlabel('epoch')
-    # plt.ylabel('LR')
-    # plt.tight_layout()
-    # plt.savefig('LR.png', dpi=300)
+    # Cosine Without Restarts
+    #scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=80, eta_min = 0.000000579)
+    #scheduler.last_epoch=start_epoch -1
+   
+    # Plot lr schedule
+    #y = []
+    #for _ in range(epochs):
+    #    scheduler.step()
+    #    y.append(optimizer.param_groups[0]['lr'])
+    #plt.plot(y, label='LambdaLR')
+    #plt.xlabel('epoch')
+    #plt.ylabel('LR')
+    #plt.tight_layout()
+    #plt.savefig('LR.png')
 
     # Mixed precision training https://github.com/NVIDIA/apex
     if mixed_precision:
@@ -212,7 +215,9 @@ def train():
 
     # Start training
     nb = len(dataloader)
-    prebias = start_epoch == 0
+    # Originally Prebias is True
+    #prebias = start_epoch == 0
+    prebias = False
     model.nc = nc  # attach number of classes to model
     model.arc = opt.arc  # attach yolo architecture
     model.hyp = hyp  # attach hyperparameters to model
@@ -293,7 +298,7 @@ def train():
                 return results
 
             # Scale loss by nominal batch_size of 64
-            loss *= batch_size / 64
+            loss *= batch_size/64 
 
             # Compute gradient
             if mixed_precision:
@@ -319,8 +324,7 @@ def train():
         # Process epoch results
         final_epoch = epoch + 1 == epochs
         if not opt.notest:  # Calculate mAP
-            if epoch % 5 == 4:
-                results, maps = test.test(cfg,
+          results, maps = test.test(cfg,
                                       data,
                                       epoch,
                                       batch_size=32,
@@ -331,18 +335,6 @@ def train():
                                       save_json=True,
                                       single_cls=opt.single_cls,
                                       dataloader=testloader)
-            else:
-                results, maps = test.test(cfg,
-                                          data,
-                                          epoch,
-                                          batch_size=32,
-                                          img_size=img_size_test,
-                                          model=model,
-                                          conf_thres=0.1,
-                                          iou_thres=0.6,
-                                          save_json=False,
-                                          single_cls=opt.single_cls,
-                                          dataloader=testloader)
 
         # Update scheduler
         scheduler.step()
@@ -391,7 +383,10 @@ def train():
 
             # Delete checkpoint
             del chkpt
-
+            
+            # Plot Results
+            plot_results()  # save as results.png
+            plt.close()
         # end epoch ----------------------------------------------------------------------------------------------------
 
     # end training
@@ -407,8 +402,7 @@ def train():
             os.system('gsutil cp %s gs://%s/weights' % (wdir + flast, opt.bucket))
             # os.system('gsutil cp %s gs://%s/weights' % (wdir + fbest, opt.bucket))
 
-    if not opt.evolve:
-        plot_results()  # save as results.png
+    
     print('%g epochs completed in %.3f hours.\n' % (epoch - start_epoch + 1, (time.time() - t0) / 3600))
     dist.destroy_process_group() if torch.cuda.device_count() > 1 else None
     torch.cuda.empty_cache()
@@ -418,7 +412,7 @@ def train():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=50)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
+    parser.add_argument('--epochs', type=int, default=20)  # 500200 batches at bs 16, 117263 COCO images = 273 epochs
     parser.add_argument('--batch-size', type=int, default=4)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--accumulate', type=int, default=4, help='batches to accumulate before optimizing')
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
@@ -432,7 +426,7 @@ if __name__ == '__main__':
     parser.add_argument('--evolve', action='store_true', help='evolve hyperparameters')
     parser.add_argument('--bucket', type=str, default='', help='gsutil bucket')
     parser.add_argument('--cache-images', action='store_true', help='cache images for faster training')
-    parser.add_argument('--weights', type=str, default='weights/ultralytics68.pt', help='initial weights')
+    parser.add_argument('--weights', type=str, default='weights/Grayscale_Weights_SPP_2020.weights', help='initial weights')
     parser.add_argument('--arc', type=str, default='default', help='yolo architecture')  # default, uCE, uBCE
     parser.add_argument('--name', default='', help='renames results.txt to results_name.txt if supplied')
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1 or cpu)')
