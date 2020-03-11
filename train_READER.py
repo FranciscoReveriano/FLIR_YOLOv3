@@ -14,8 +14,8 @@ class File_Reader:
     trainPath = ""
     validatePath = ""
     txtPath = ""
-    trainFileName = "data/DsiacPlusF1.txt"
-    validateFileName = "data/DsiacPlusF2.txt"
+    trainFileName = "data/FLIR_Train.txt"
+    validateFileName = "data/FLIR_Val.txt"
     fileList = []
     fileCount = 0
     def __init__(self, trainPath, validatePath, txtPath):
@@ -47,6 +47,6 @@ class File_Reader:
             txtFile.write(name)
 
 Trainpath = 'data/images/train'
-ValidatePath = "data/images/validation"
+ValidatePath = "data/images/val"
 txtPath = "data/"
 reader = File_Reader(Trainpath, ValidatePath, txtPath)

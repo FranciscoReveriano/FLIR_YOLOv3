@@ -187,11 +187,8 @@ def train():
     batch_size = min(batch_size, len(dataset))
     nw = 8  # number of workers
     # Calculate Correct Batch Size for Testing
-    batch_size_test = 0
-    if batch_size == 1:
-        batch_size_test = 32
-    else:
-        batch_size_test = batch_size * 2
+    batch_size_test = 32
+
 
     # Proceed to Create Dataloaders
     dataloader = torch.utils.data.DataLoader(dataset,
@@ -216,8 +213,7 @@ def train():
     # Start training
     nb = len(dataloader)
     # Originally Prebias is True
-    #prebias = start_epoch == 0
-    prebias = False
+    prebias = start_epoch == 0
     model.nc = nc  # attach number of classes to model
     model.arc = opt.arc  # attach yolo architecture
     model.hyp = hyp  # attach hyperparameters to model
@@ -235,7 +231,7 @@ def train():
         # Prebias
         if prebias:
             if epoch < 3:  # prebias
-                ps = 0.1, 0.9  # prebias settings (lr=0.1, momentum=0.9)
+                ps = 0.001, 0.9  # prebias settings (lr=0.1, momentum=0.9)
             else:  # normal training
                 ps = hyp['lr0'], hyp['momentum']  # normal training settings
                 print_model_biases(model)
@@ -416,7 +412,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=4)  # effective bs = batch_size * accumulate = 16 * 4 = 64
     parser.add_argument('--accumulate', type=int, default=4, help='batches to accumulate before optimizing')
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp3.cfg', help='*.cfg path')
-    parser.add_argument('--data', type=str, default='data/DsiacPlus.data', help='*.data path')
+    parser.add_argument('--data', type=str, default='data/FLIR.data', help='*.data path')
     parser.add_argument('--multi-scale', action='store_true', help='adjust (67% - 150%) img_size every 10 batches')
     parser.add_argument('--img-size', nargs='+', type=int, default=[640], help='train and test image-sizes')
     parser.add_argument('--rect', action='store_true', help='rectangular training')
@@ -426,7 +422,7 @@ if __name__ == '__main__':
     parser.add_argument('--evolve', action='store_true', help='evolve hyperparameters')
     parser.add_argument('--bucket', type=str, default='', help='gsutil bucket')
     parser.add_argument('--cache-images', action='store_true', help='cache images for faster training')
-    parser.add_argument('--weights', type=str, default='weights/Grayscale_Weights_SPP_2020.weights', help='initial weights')
+    parser.add_argument('--weights', type=str, default='weights/Grayscale_YOLOv3_SPP_2019.weights', help='initial weights')
     parser.add_argument('--arc', type=str, default='default', help='yolo architecture')  # default, uCE, uBCE
     parser.add_argument('--name', default='', help='renames results.txt to results_name.txt if supplied')
     parser.add_argument('--device', default='', help='device id (i.e. 0 or 0,1 or cpu)')
